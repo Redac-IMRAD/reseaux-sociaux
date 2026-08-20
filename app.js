@@ -1,100 +1,245 @@
 (() => {
-  const config = window.REDAC_CONFIG || {};
+  const site = window.REDAC_CONFIG || {};
+
+  const DEFAULT_REMOTE_CONFIG = {
+    title: "Audrey — Redac'IMRAD",
+    tagline: "Accompagnement mémoire en kinésithérapie, de la K4 à la soutenance.",
+    sections: [
+      {
+        id: "reservation",
+        label: "Réserver",
+        order: 10,
+        visible: true,
+        buttons: [
+          {
+            id: "point-memoire",
+            label: "Réserver mon Point Mémoire (60 min)",
+            url: "",
+            style: "primary",
+            badge: "",
+            order: 10,
+            visible: true
+          }
+        ]
+      },
+      {
+        id: "guides",
+        label: "Guides gratuits",
+        order: 20,
+        visible: true,
+        buttons: [
+          {
+            id: "guide-k4",
+            label: "Guide — 10 clés & 3 exercices (K4)",
+            url: "",
+            style: "secondary",
+            badge: "",
+            order: 10,
+            visible: true
+          },
+          {
+            id: "guide-k5",
+            label: "Guide — Statistiques & soutenance (K5)",
+            url: "",
+            style: "secondary",
+            badge: "",
+            order: 20,
+            visible: true
+          }
+        ]
+      },
+      {
+        id: "campagne",
+        label: "Campagne en cours",
+        order: 30,
+        visible: true,
+        buttons: [
+          {
+            id: "questionnaire-k4-k5",
+            label: "Questionnaire — Appel à témoins K4 & K5",
+            url: "https://forms.gle/EUYME1qzySRP5L7Y8",
+            style: "primary",
+            badge: "temporaire",
+            order: 10,
+            visible: true
+          }
+        ]
+      }
+    ],
+    instagram: {
+      visible: true,
+      handle: "@audrey_redac_imrad",
+      url: "https://www.instagram.com/audrey_redac_imrad"
+    }
+  };
+
   const setText = (id, value) => {
     const el = document.getElementById(id);
-    if (el && typeof value === 'string') el.textContent = value;
-  };
-  const setLink = (id, label, url) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (label) el.textContent = label;
-    if (url) el.href = url;
+    if (el && typeof value === "string") el.textContent = value;
   };
 
-  setText('brand-name', config.brand || "Redac'IMRAD");
-  setText('footer-brand', config.brand || "Redac'IMRAD");
-  setText('hero-eyebrow', config.hero?.eyebrow || '');
-  setText('hero-title', config.hero?.title || '');
-  setText('hero-text', config.hero?.text || '');
-  setLink('primary-cta', config.hero?.ctaLabel, config.hero?.ctaUrl);
-  setText('offers-intro', config.offersIntro || '');
-  setText('final-title', config.finalCta?.title || '');
-  setText('final-text', config.finalCta?.text || '');
-  setLink('final-cta', config.finalCta?.label, config.finalCta?.url);
-  setText('footer-note', config.footerNote || '');
+  const safeUrl = (url) => {
+    if (!url) return "#";
+    try {
+      const parsed = new URL(url, window.location.href);
+      return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : "#";
+    } catch (_) {
+      return "#";
+    }
+  };
 
-  const features = document.getElementById('features');
-  (config.features || []).forEach((feature) => {
-    const article = document.createElement('article');
-    article.className = 'card';
-    const title = document.createElement('h3');
-    title.textContent = feature.title || '';
-    const text = document.createElement('p');
-    text.textContent = feature.text || '';
-    article.append(title, text);
-    features?.appendChild(article);
-  });
+  const renderStaticDesign = () => {
+    setText("brand-name", site.brand || "Redac'IMRAD");
+    setText("footer-brand", site.brand || "Redac'IMRAD");
+    setText("hero-eyebrow", site.hero?.eyebrow || "");
+    setText("hero-title", site.hero?.title || "");
+    setText("hero-text", site.hero?.text || "");
+    setText("final-title", site.finalCta?.title || "");
+    setText("final-text", site.finalCta?.text || "");
 
-  const offers = document.getElementById('offers');
-  const offerList = config.offers || [];
-  if (!offerList.length && offers) {
-    const empty = document.createElement('div');
-    empty.className = 'empty-state';
-    empty.textContent = 'Les offres seront publiées prochainement.';
-    offers.appendChild(empty);
-  }
-
-  offerList.forEach((offer) => {
-    const article = document.createElement('article');
-    article.className = 'offer-card';
-
-    const title = document.createElement('h3');
-    title.textContent = offer.name || '';
-    article.appendChild(title);
-
-    if (offer.price) {
-      const price = document.createElement('div');
-      price.className = 'price';
-      price.textContent = offer.price;
-      article.appendChild(price);
+    const finalCta = document.getElementById("final-cta");
+    if (finalCta) {
+      finalCta.textContent = site.finalCta?.label || "Découvrir les ressources";
+      finalCta.href = site.finalCta?.url || "#ressources";
     }
 
-    if (offer.description) {
-      const description = document.createElement('p');
-      description.textContent = offer.description;
-      article.appendChild(description);
-    }
-
-    if (Array.isArray(offer.bullets) && offer.bullets.length) {
-      const list = document.createElement('ul');
-      offer.bullets.forEach((item) => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        list.appendChild(li);
+    const features = document.getElementById("features");
+    if (features) {
+      features.innerHTML = "";
+      (site.features || []).forEach((feature) => {
+        const article = document.createElement("article");
+        article.className = "card";
+        const title = document.createElement("h3");
+        title.textContent = feature.title || "";
+        const text = document.createElement("p");
+        text.textContent = feature.text || "";
+        article.append(title, text);
+        features.appendChild(article);
       });
-      article.appendChild(list);
     }
 
-    if (offer.buttonUrl) {
-      const link = document.createElement('a');
-      link.className = 'button button-primary';
-      link.href = offer.buttonUrl;
-      link.textContent = offer.buttonLabel || 'Choisir';
-      article.appendChild(link);
+    const faq = document.getElementById("faq-list");
+    if (faq) {
+      faq.innerHTML = "";
+      (site.faq || []).forEach((item) => {
+        const article = document.createElement("article");
+        article.className = "faq-item";
+        const title = document.createElement("h3");
+        title.textContent = item.question || "";
+        const text = document.createElement("p");
+        text.textContent = item.answer || "";
+        article.append(title, text);
+        faq.appendChild(article);
+      });
+    }
+  };
+
+  const renderRemoteConfig = (remoteConfig) => {
+    const cfg = remoteConfig && typeof remoteConfig === "object" ? remoteConfig : DEFAULT_REMOTE_CONFIG;
+
+    setText("remote-title", cfg.title || "Ressources et accompagnements");
+    setText("remote-tagline", cfg.tagline || "");
+
+    const content = document.getElementById("dynamic-content");
+    if (content) {
+      content.innerHTML = "";
+      const sections = Array.isArray(cfg.sections) ? [...cfg.sections] : [];
+      let visibleButtonCount = 0;
+
+      sections
+        .filter((section) => section.visible !== false)
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .forEach((section) => {
+          const buttons = Array.isArray(section.buttons)
+            ? [...section.buttons]
+                .filter((button) => button.visible !== false)
+                .sort((a, b) => (a.order || 0) - (b.order || 0))
+            : [];
+
+          if (!buttons.length) return;
+          visibleButtonCount += buttons.length;
+
+          const group = document.createElement("section");
+          group.className = "dynamic-group";
+
+          const heading = document.createElement("h3");
+          heading.className = "dynamic-group-title";
+          heading.textContent = section.label || "Ressources";
+          group.appendChild(heading);
+
+          const grid = document.createElement("div");
+          grid.className = "dynamic-links-grid";
+
+          buttons.forEach((button) => {
+            const link = document.createElement("a");
+            link.className = "resource-link" + (button.style === "secondary" ? " secondary" : "");
+            link.href = safeUrl(button.url);
+            link.target = "_blank";
+            link.rel = "noopener";
+
+            if (!button.url) {
+              link.setAttribute("aria-disabled", "true");
+              link.addEventListener("click", (event) => event.preventDefault());
+            }
+
+            const label = document.createElement("span");
+            label.className = "resource-label";
+            label.textContent = button.label || "Lien";
+            link.appendChild(label);
+
+            if (button.badge) {
+              const badge = document.createElement("span");
+              badge.className = "badge";
+              badge.textContent = button.badge;
+              link.appendChild(badge);
+            }
+
+            grid.appendChild(link);
+          });
+
+          group.appendChild(grid);
+          content.appendChild(group);
+        });
+
+      if (!visibleButtonCount) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.textContent = "Les ressources seront publiées prochainement.";
+        content.appendChild(empty);
+      }
     }
 
-    offers?.appendChild(article);
-  });
+    const footer = document.getElementById("dynamic-footer");
+    if (footer) {
+      footer.innerHTML = "";
+      if (cfg.instagram && cfg.instagram.visible !== false) {
+        footer.appendChild(document.createTextNode("Instagram "));
+        const link = document.createElement("a");
+        link.href = safeUrl(cfg.instagram.url);
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = cfg.instagram.handle || "Instagram";
+        footer.appendChild(link);
+      }
+    }
+  };
 
-  const faq = document.getElementById('faq-list');
-  (config.faq || []).forEach((item) => {
-    const article = document.createElement('article');
-    article.className = 'faq-item';
-    const title = document.createElement('h3');
-    title.textContent = item.question || '';
-    const text = document.createElement('p');
-    text.textContent = item.answer || '';
-    article.append(title, text);
-    faq?.appendChild(article);
-  });
+  window.redacImradApplyConfig = (config) => renderRemoteConfig(config);
+
+  const loadRemoteConfig = () => {
+    const endpoint = site.configEndpoint;
+    if (!endpoint) {
+      renderRemoteConfig(DEFAULT_REMOTE_CONFIG);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = endpoint + (endpoint.includes("?") ? "&" : "?") + "mode=config&callback=redacImradApplyConfig&t=" + Date.now();
+    script.async = true;
+    script.onerror = () => renderRemoteConfig(DEFAULT_REMOTE_CONFIG);
+    document.head.appendChild(script);
+  };
+
+  renderStaticDesign();
+  loadRemoteConfig();
 })();
