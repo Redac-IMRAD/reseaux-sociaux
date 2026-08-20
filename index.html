@@ -13,7 +13,7 @@
       <a class="brand" href="#top" id="brand-name">Redac'IMRAD</a>
       <nav aria-label="Navigation principale">
         <a href="#accompagnement">Accompagnement</a>
-        <a href="#offres">Offres</a>
+        <a href="#ressources">Ressources</a>
         <a href="#faq">FAQ</a>
       </nav>
     </div>
@@ -26,7 +26,7 @@
         <h1 id="hero-title">Avance dans ton mémoire avec une méthode claire.</h1>
         <p class="hero-text" id="hero-text"></p>
         <div class="hero-actions">
-          <a class="button button-primary" id="primary-cta" href="#offres">Voir les offres</a>
+          <a class="button button-primary" href="#ressources">Voir les ressources</a>
           <a class="button button-secondary" href="#accompagnement">Comprendre l'accompagnement</a>
         </div>
       </div>
@@ -40,12 +40,14 @@
       </div>
     </section>
 
-    <section class="section section-alt" id="offres">
+    <section class="section section-alt" id="ressources">
       <div class="container">
-        <p class="section-kicker">Choisir</p>
-        <h2>Les offres</h2>
-        <p class="section-intro" id="offers-intro"></p>
-        <div class="offers-grid" id="offers"></div>
+        <p class="section-kicker">À portée de clic</p>
+        <div class="remote-head">
+          <h2 id="remote-title">Ressources et accompagnements</h2>
+          <p class="section-intro" id="remote-tagline"></p>
+        </div>
+        <div id="dynamic-content" aria-live="polite"></div>
       </div>
     </section>
 
@@ -61,7 +63,7 @@
       <div class="container narrow">
         <h2 id="final-title">Prêt·e à avancer ?</h2>
         <p id="final-text"></p>
-        <a class="button button-primary" id="final-cta" href="#offres">Découvrir les offres</a>
+        <a class="button button-primary" id="final-cta" href="#ressources">Découvrir les ressources</a>
       </div>
     </section>
   </main>
@@ -69,7 +71,7 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <span id="footer-brand">Redac'IMRAD</span>
-      <span id="footer-note"></span>
+      <span id="dynamic-footer"></span>
     </div>
   </footer>
 
